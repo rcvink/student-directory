@@ -21,9 +21,21 @@ def print_header
   puts "-------------"
 end
 
-def print(students)
-  students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
+def print_all_students(students)
+  students.each_with_index do |student, index|
+    puts "#{index + 1}. #{student[:name]} (#{student[:cohort]} cohort)"
+  end
+end
+
+def print_for_letter(students, letter)
+  students.each_with_index do |student, index|
+    puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name][0].upcase == letter.upcase
+  end
+end
+
+def print_with_char_limit(students, characters)
+  students.each_with_index do |student, index|
+    puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name].length < characters
   end
 end
 
@@ -33,5 +45,5 @@ end
 
 students = input_students
 print_header
-print(students)
+print_all_students(students)
 print_footer(students)
