@@ -3,7 +3,7 @@
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -36,9 +36,9 @@ def input_students
   puts "Please enter the names of the students and their cohort"
   puts "To finish, just hit return twice"
   # get the first name
-  name = gets.chomp
+  name = STDIN.gets.chomp
   # get the cohort, set to November if no input
-  cohort = gets.chomp
+  cohort = STDIN.gets.chomp
   if cohort.empty?
     cohort = "November"
   end
@@ -48,8 +48,8 @@ def input_students
     @students << {name: name, cohort: cohort.to_sym}
     puts "Now we have #{@students.count} students"
     # get another name from the user
-    name = gets.chomp
-    cohort = gets.chomp
+    name = STDIN.gets.chomp
+    cohort = STDIN.gets.chomp
     if cohort.empty?
       cohort = "November"
     end
@@ -73,8 +73,20 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def try_load_students
+  filename = ARGV.first # first argument from the command line
+  return if filename.nil? # get out of the method if it isn't given
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count} from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't exist."
+    exit
+  end
+end
+
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
@@ -92,7 +104,7 @@ def print_students_list
     puts "There are no students at Villains Academy!"
   else
     @students.each_with_index do |student, index|
-      puts "#{index + 1}. name: #{student[:name].center(20)} | cohort: #{student[:cohort].to_s.center(12)}}"
+      puts "#{index + 1}. name: #{student[:name].center(20)} | cohort: #{student[:cohort].to_s.center(12)}"
     end
   end
 end
@@ -106,4 +118,5 @@ def print_footer
   end
 end
 
+try_load_students
 interactive_menu
