@@ -11,6 +11,7 @@ def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
+  puts "4. Load the list from students.csv"
   puts "9. Exit"
 end
 
@@ -22,6 +23,8 @@ def process(selection)
     show_students
   when "3"
     save_students
+  when "4"
+    load_students
   when "9"
     exit # this will terminate the program
   else
@@ -30,7 +33,7 @@ def process(selection)
 end
 
 def input_students
-  puts "Please enter the names of the students, their cohort, and their place of birth"
+  puts "Please enter the names of the students and their cohort"
   puts "To finish, just hit return twice"
   # get the first name
   name = gets.chomp
@@ -39,12 +42,10 @@ def input_students
   if cohort.empty?
     cohort = "November"
   end
-  # get the country of birth
-  birthplace = gets.chomp
-  # while the name or birthplace are not empty, repeat this:
-  while !(name.empty? || birthplace.empty?) do
+  # while the name is not empty, repeat this:
+  while !name.empty? do
     # add the student hash to the array
-    @students << {name: name, cohort: cohort.to_sym, birthplace: birthplace.to_sym}
+    @students << {name: name, cohort: cohort.to_sym}
     puts "Now we have #{@students.count} students"
     # get another name from the user
     name = gets.chomp
@@ -52,7 +53,6 @@ def input_students
     if cohort.empty?
       cohort = "November"
     end
-    birthplace = gets.chomp
   end
 end
 
@@ -73,6 +73,15 @@ def save_students
   file.close
 end
 
+def load_students
+  file = File.open("students.csv", "r")
+  file.readlines.each do |line|
+    name, cohort = line.chomp.split(',')
+    @students << {name: name, cohort: cohort.to_sym}
+  end
+  file.close
+end
+
 def print_header
   puts "The students of Villains Academy"
   puts "-------------"
@@ -83,7 +92,7 @@ def print_students_list
     puts "There are no students at Villains Academy!"
   else
     @students.each_with_index do |student, index|
-      puts "#{index + 1}. name: #{student[:name].center(20)} | cohort: #{student[:cohort].to_s.center(12)} | country: #{student[:birthplace].to_s.center(15)}"
+      puts "#{index + 1}. name: #{student[:name].center(20)} | cohort: #{student[:cohort].to_s.center(12)}}"
     end
   end
 end
