@@ -1,3 +1,28 @@
+def interactive_menu
+  students = []
+  loop do
+    # 1. print the menu and ask the user what to do
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+    # 2. read the input and save it into a variable
+    selection = gets.chomp
+    # 3. do what the user has asked
+    case selection
+    when "1"
+      students = input_students
+    when "2"
+      print_header
+      print(students)
+      print_footer(students)
+    when "9"
+      exit # this will terminate the program
+    else
+      puts "I don't know what you meant, try again"
+    end
+  end
+end
+
 def input_students
   puts "Please enter the names of the students, their cohort, and their place of birth"
   puts "To finish, just hit return twice"
@@ -34,27 +59,13 @@ def print_header
   puts "-------------"
 end
 
-def print_all_students(students)
+def print(students)
   if students.length == 0
     puts "There are no students at Villains Academy!"
   else
-    index = 0
-    until index == students.length
-      puts "#{index + 1}. name: #{students[index][:name].center(20)} | cohort: #{students[index][:cohort].to_s.center(12)} | country: #{students[index][:birthplace].to_s.center(15)}"
-      index += 1
+    students.each_with_index do |student, index|
+      puts "#{index + 1}. name: #{student[:name].center(20)} | cohort: #{student[:cohort].to_s.center(12)} | country: #{student[:birthplace].to_s.center(15)}"
     end
-  end
-end
-
-def print_for_letter(students, letter)
-  students.each_with_index do |student, index|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name][0].upcase == letter.upcase
-  end
-end
-
-def print_with_char_limit(students, characters)
-  students.each_with_index do |student, index|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)" if student[:name].length < characters
   end
 end
 
@@ -67,7 +78,4 @@ def print_footer(students)
   end
 end
 
-students = input_students
-print_header
-print_all_students(students)
-print_footer(students)
+interactive_menu
